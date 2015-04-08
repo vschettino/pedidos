@@ -24,16 +24,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                // you may configure additional properties here
+            ],
             'id',
             'nome',
             'descricao',
             'valor',
             'qt_estoque',
-            // 'categoria_id',
+            'categoria.nome',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);
+    ?>
+    <?= Html::a('Criar Pedido com os itens selecionados', null,
+        ['class' => 'btn btn-primary', 'id' => 'criar-pedido']) ?>
 
 </div>

@@ -23,6 +23,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'categoria_id')->dropDownList(\yii\helpers\ArrayHelper::map(Categoria::find()->all(),
         'id', 'nome')) ?>
+    <?= $form->field($model, 'peso')->textInput() ?>
+
+    <?= $form->field($model, 'altura')->textInput() ?>
+
+    <?= $form->field($model, 'largura')->textInput() ?>
+
+    <?= $form->field($model, 'comprimento')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update',
