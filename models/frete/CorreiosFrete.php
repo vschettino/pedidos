@@ -34,11 +34,15 @@ abstract class CorreiosFrete implements FreteInterface
         curl_setopt($ch, CURLOPT_USERAGENT,
             'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
         $data = curl_exec($ch);
+//        echo $url;die;
         curl_close($ch);
-        $xml = simplexml_load_string($data)->cServico;
-        if ($xml->Erro != 0) {
+        $xml = simplexml_load_string($data);
+
+        if ($xml == null || $xml->cServico->Erro != 0) {
             return false;
         }
+        $xml = $xml->cServico;
+
         $this->valor = (float)str_replace(',', '.', $xml->Valor);
         $this->prazo = (string)$xml->PrazoEntrega;
 

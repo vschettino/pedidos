@@ -35,7 +35,7 @@ class Pedido extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-
+            [['transportadora_id'], 'required']
         ];
     }
 
@@ -96,7 +96,7 @@ class Pedido extends \yii\db\ActiveRecord
     public function getStatusAtual()
     {
         return $this->hasMany(Status::className(), ['id' => 'status_id'])->viaTable('status_pedido',
-            ['pedido_id' => 'id'])->innerJoinWith('statusPedidos')->orderBy('dt_ref', SORT_DESC)->one();
+            ['pedido_id' => 'id'])->innerJoinWith('statusPedidos')->orderBy('dt_ref DESC')->one();
     }
 
     public function afterFind()
@@ -113,27 +113,41 @@ class Pedido extends \yii\db\ActiveRecord
 
     public function abrir()
     {
-        return $this->_statusHandler->abrir();
-    }
-
-    public function enviar()
-    {
-        return $this->_statusHandler->enviar();
+        return $this->mudaStatus($this->_statusHandler->abrir(), 1);
     }
 
     public function aprovarPgto()
     {
-        return $this->_statusHandler->aprovarPgto();
+        return $this->mudaStatus($this->_statusHandler->aprovarPgto(), 2);
     }
+
+    public function enviar()
+    {
+        return $this->mudaStatus($this->_statusHandler->enviar(), 3);
+    }
+
 
     public function entregar()
     {
-        return $this->_statusHandler->entregar();
+        return $this->mudaStatus($this->_statusHandler->entregar(), 4);
     }
 
     public function cancelar()
     {
-        return $this->_statusHandler->cancelar();
+        return $this->mudaStatus($this->_statusHandler->cancelar(), 5);
     }
 
+    public function mudaStatus($status, $status_id)
+    {
+        if (is_object($status)) {
+            $sp = new StatusPedido();
+            $sp->pedido_id = $this->id;
+            $sp->status_id = $status_id;
+            $sp->dt_ref = date('Y-m-d H:i:s');
+            $sp->save();
+//            $this->_statusHandler = $status;
+        }
+
+        return $status;
+    }
 }

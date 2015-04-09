@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\CheckboxColumn',
                 // you may configure additional properties here
             ],
-            'id',
+//            'id',
             'nome',
             'descricao',
             'valor',
