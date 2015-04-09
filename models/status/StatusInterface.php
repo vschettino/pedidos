@@ -11,5 +11,16 @@ namespace app\models\status;
 
 interface StatusInterface
 {
+    public function getLabel();
+
+    public function abrir();
+
+    public function enviar();
+
+    public function aprovarPgto();
+
+    public function entregar();
+
+    public function cancelar();
 
 }

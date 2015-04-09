@@ -51,10 +51,10 @@ class PedidoController extends Controller
      * @param integer $transportadora_id
      * @return mixed
      */
-    public function actionView($id, $transportadora_id)
+    public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id, $transportadora_id),
+            'model' => $this->findModel($id),
         ]);
     }
 
@@ -98,8 +98,21 @@ class PedidoController extends Controller
      * @param integer $transportadora_id
      * @return mixed
      */
-    public function actionUpdate()
+    public function actionUpdate($id)
     {
+        return $this->render('update', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    public function actionMudaStatus($pedido_id, $status_id)
+    {
+        $pedido = $this->findModel($pedido_id);
+        if (!is_object($resp = $pedido->$status_id())) {
+            return Json::encode(['error' => true, 'msg' => $resp]);
+        }
+
+        return Json::encode(['error' => false, 'msg' => $resp->getLabel()]);
 
     }
 

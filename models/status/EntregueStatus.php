@@ -12,4 +12,8 @@ namespace app\models\status;
 class EntregueStatus extends ConcluidoStatus
 {
 
+    public function getLabel()
+    {
+        return "Entregue";
+    }
 }

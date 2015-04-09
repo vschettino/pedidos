@@ -19,6 +19,8 @@ use Yii;
  */
 class Pedido extends \yii\db\ActiveRecord
 {
+    public $_statusHandler;
+
     /**
      * @inheritdoc
      */
@@ -90,4 +92,48 @@ class Pedido extends \yii\db\ActiveRecord
         return $this->hasMany(Status::className(), ['id' => 'status_id'])->viaTable('status_pedido',
             ['pedido_id' => 'id']);
     }
+
+    public function getStatusAtual()
+    {
+        return $this->hasMany(Status::className(), ['id' => 'status_id'])->viaTable('status_pedido',
+            ['pedido_id' => 'id'])->innerJoinWith('statusPedidos')->orderBy('dt_ref', SORT_DESC)->one();
+    }
+
+    public function afterFind()
+    {
+        $stausHandlerCName = str_replace(" ", "", $this->statusAtual->nome);
+        $stausHandlerCName = 'app\models\status\\' . $stausHandlerCName . "Status";
+        $this->_statusHandler = new $stausHandlerCName();
+    }
+
+    public function getLabel()
+    {
+        return $this->_statusHandler->getLabel();
+    }
+
+    public function abrir()
+    {
+        return $this->_statusHandler->abrir();
+    }
+
+    public function enviar()
+    {
+        return $this->_statusHandler->enviar();
+    }
+
+    public function aprovarPgto()
+    {
+        return $this->_statusHandler->aprovarPgto();
+    }
+
+    public function entregar()
+    {
+        return $this->_statusHandler->entregar();
+    }
+
+    public function cancelar()
+    {
+        return $this->_statusHandler->cancelar();
+    }
+
 }

@@ -9,7 +9,11 @@
 namespace app\models\status;
 
 
-abstract class ConcluidoStatus implements StatusInterface
+class CanceladoStatus extends ConcluidoStatus implements StatusInterface
 {
 
+    public function getLabel()
+    {
+        return "Cancelado";
+    }
 }
