@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'adminEmail' => 'admin@example.com',
+    'cepOrigem' => '36025320',
+    'cepDestino' => '36025000',
 ];

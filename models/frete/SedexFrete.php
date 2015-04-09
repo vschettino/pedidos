@@ -11,5 +11,15 @@ namespace app\models\frete;
 
 class SedexFrete extends CorreiosFrete
 {
+    public $codigoServico = 40010;
 
+    public function getId()
+    {
+        return 2;
+    }
+
+    public function getTitle()
+    {
+        return 'Sedex';
+    }
 }

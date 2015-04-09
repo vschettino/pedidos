@@ -78,7 +78,8 @@ class Produto extends \yii\db\ActiveRecord
      */
     public function getPedidos()
     {
-        return $this->hasMany(Pedido::className(), ['id' => 'pedido_id'])->viaTable('pedido_produto', ['produto_id' => 'id']);
+        return $this->hasMany(Pedido::className(), ['id' => 'pedido_id'])->viaTable('pedido_produto',
+            ['produto_id' => 'id']);
     }
 
     /**
@@ -87,5 +88,20 @@ class Produto extends \yii\db\ActiveRecord
     public function getCategoria()
     {
         return $this->hasOne(Categoria::className(), ['id' => 'categoria_id']);
+    }
+
+    public function __toString()
+    {
+        return "[" . $this->categoria->nome . "] " . $this->nome . " por " . Yii::$app->formatter->asCurrency($this->valor);
+    }
+
+    public static function getSomaConjunto($array, $attr)
+    {
+        $sum = 0;
+        foreach ($array as $item) {
+            $sum += $item->$attr;
+        }
+
+        return $sum;
     }
 }

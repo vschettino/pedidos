@@ -33,9 +33,7 @@ class Pedido extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'transportadora_id'], 'required'],
-            [['id', 'transportadora_id'], 'integer'],
-            [['data'], 'safe']
+
         ];
     }
 
@@ -72,7 +70,8 @@ class Pedido extends \yii\db\ActiveRecord
      */
     public function getProdutos()
     {
-        return $this->hasMany(Produto::className(), ['id' => 'produto_id'])->viaTable('pedido_produto', ['pedido_id' => 'id']);
+        return $this->hasMany(Produto::className(), ['id' => 'produto_id'])->viaTable('pedido_produto',
+            ['pedido_id' => 'id']);
     }
 
     /**
@@ -88,6 +87,7 @@ class Pedido extends \yii\db\ActiveRecord
      */
     public function getStatus()
     {
-        return $this->hasMany(Status::className(), ['id' => 'status_id'])->viaTable('status_pedido', ['pedido_id' => 'id']);
+        return $this->hasMany(Status::className(), ['id' => 'status_id'])->viaTable('status_pedido',
+            ['pedido_id' => 'id']);
     }
 }

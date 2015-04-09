@@ -2,9 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\PedidoProduto;
+use app\models\StatusPedido;
 use Yii;
 use app\models\Pedido;
 use app\models\PedidoSearch;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -14,17 +17,7 @@ use yii\filters\VerbFilter;
  */
 class PedidoController extends Controller
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
+
 
     public function actions()
     {
@@ -72,15 +65,30 @@ class PedidoController extends Controller
      */
     public function actionCreate()
     {
+        ;
         $model = new Pedido();
+        $model->data = date('Y-m-d');
+        $model->transportadora_id = Yii::$app->request->post('frete_id');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id, 'transportadora_id' => $model->transportadora_id]);
+        if ($model->save()) {
+            $produtos = Yii::$app->request->post('produto_id');
+            foreach ($produtos as $p) {
+                $pp = new PedidoProduto();
+                $pp->pedido_id = $model->id;
+                $pp->produto_id = $p;
+                $pp->save();
+            }
+            $ps = new StatusPedido();
+            $ps->pedido_id = $model->id;
+            $ps->dt_ref = date('Y-m-d');
+            $ps->status_id = 1;
+            $ps->save();
+            Yii::$app->session->setFlash('success', ['Pedido Criado Com Sucesso']);
         } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            Yii::$app->session->setFlash('error', ['Não Foi possível cadastrar seu pedido']);
         }
+
+        $this->redirect(['index']);
     }
 
     /**
@@ -90,17 +98,9 @@ class PedidoController extends Controller
      * @param integer $transportadora_id
      * @return mixed
      */
-    public function actionUpdate($id, $transportadora_id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id, $transportadora_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id, 'transportadora_id' => $model->transportadora_id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
     }
 
     /**
@@ -110,9 +110,9 @@ class PedidoController extends Controller
      * @param integer $transportadora_id
      * @return mixed
      */
-    public function actionDelete($id, $transportadora_id)
+    public function actionDelete($id)
     {
-        $this->findModel($id, $transportadora_id)->delete();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -125,9 +125,9 @@ class PedidoController extends Controller
      * @return Pedido the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id, $transportadora_id)
+    protected function findModel($id)
     {
-        if (($model = Pedido::findOne(['id' => $id, 'transportadora_id' => $transportadora_id])) !== null) {
+        if (($model = Pedido::findOne(['id' => $id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
