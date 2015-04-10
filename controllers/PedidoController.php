@@ -25,25 +25,15 @@ class PedidoController extends Controller
         return [
             'checkout' => [
                 'class' => 'app\controllers\actions\CheckoutAction',
-            ]
+            ],
+            'index' => [
+                'class' => 'app\controllers\actions\IndexPedidoAction',
+            ],
+
         ];
 
     }
 
-    /**
-     * Lists all Pedido models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new PedidoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
 
     /**
      * Displays a single Pedido model.
@@ -65,7 +55,6 @@ class PedidoController extends Controller
      */
     public function actionCreate()
     {
-        ;
         $model = new Pedido();
         $model->data = date('Y-m-d');
         $model->transportadora_id = Yii::$app->request->post('frete_id');
